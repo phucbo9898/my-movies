@@ -28,4 +28,6 @@ export interface Movie {
   quality: string;
   lang: string;
   view: number;
+  alternative_names: string[];
+  year: number;
 }

@@ -2,13 +2,14 @@
 
 import * as React from "react";
 import { Search, X } from "lucide-react";
-import { Category } from "@/app/types/movie";
+import { Genre } from "@/app/types/genre";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
+import { Container } from "./container";
 
 interface MainLayoutProps {
   children: React.ReactNode;
-  genres: Category[];
+  genres: Genre[];
 }
 
 export default function MainLayout({ children, genres }: MainLayoutProps) {
@@ -16,13 +17,13 @@ export default function MainLayout({ children, genres }: MainLayoutProps) {
   const [searchOpen, setSearchOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.06),transparent_25%),linear-gradient(180deg,#030712_0%,#090b11_45%,#05070d_100%)] text-white">
+    <div className="flex flex-col min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.06),transparent_25%),linear-gradient(180deg,#030712_0%,#090b11_45%,#05070d_100%)] text-white">
       <Header
         onToggleSidebar={() => setSidebarOpen((value) => !value)}
         onToggleSearch={() => setSearchOpen((value) => !value)}
       />
 
-      <div className="relative flex min-h-[calc(100vh-5rem)]">
+      <div className="relative flex flex-1">
         <Sidebar
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
@@ -30,7 +31,7 @@ export default function MainLayout({ children, genres }: MainLayoutProps) {
         />
 
         <div className="flex-1">
-          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+          <Container>
             {searchOpen && (
               <div className="mb-6 overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl shadow-black/20 backdrop-blur-xl">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -81,9 +82,12 @@ export default function MainLayout({ children, genres }: MainLayoutProps) {
             )}
 
             {children}
-          </div>
+          </Container>
         </div>
       </div>
+
+      {/* Footer */}
+      {/* <Footer /> */}
 
       {sidebarOpen && (
         <button

@@ -1,77 +1,57 @@
-﻿import type { Movie } from "./types/movie";
-import { getGenres, getHomeMovies } from "./services/movie-api";
+﻿import { getGenres, getHomeMovies } from "./services/movie-api";
 import MainLayout from "./shared/components/layout/main-layout";
+import { MovieGrid } from "./features/movie/components/movie-grid";
+import { Footer } from "./shared/components/layout/footer";
 
 export default async function Home() {
-  const [movieGroups, genres] = await Promise.all([
-    getHomeMovies(),
-    getGenres(),
-  ]);
+  const [movieGroups, genres] = await Promise.all([getHomeMovies(), getGenres()]);
   const entries = Object.entries(movieGroups);
   const hasMovies = entries.some(([, movies]) => movies.length > 0);
 
   return (
     <MainLayout genres={genres}>
-      <main className="min-h-screen">
-        <div className="space-y-8 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/20 backdrop-blur-xl">
-          <header className="space-y-3">
-            <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">
-              Movie streaming example
+      <main className="space-y-12">
+        {/* Hero Section */}
+        <section className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">
+              Premium Streaming
             </p>
-            <h1 className="text-4xl font-semibold text-white">
-              Browse home movies
+            <h1 className="text-5xl font-bold text-white md:text-6xl">
+              Discover Your Next Favorite
             </h1>
-            <p className="max-w-2xl text-zinc-300">
-              A minimal server-rendered homepage that fetches movies using the
-              service layer.
+            <p className="max-w-2xl text-lg text-zinc-300">
+              Explore thousands of movies and series in one place. Stream high-quality entertainment anytime, anywhere.
             </p>
-          </header>
+          </div>
+        </section>
 
-          {hasMovies ? (
-            <div className="space-y-10">
-              {entries.map(([groupKey, movies]) =>
-                movies.length > 0 ? (
-                  <section key={groupKey}>
-                    <h2 className="mb-4 text-2xl font-semibold capitalize text-white">
+        {/* Movie Collections */}
+        {hasMovies ? (
+          <div className="space-y-12 pb-20">
+            {entries.map(([groupKey, movies]) =>
+              movies.length > 0 ? (
+                <section key={groupKey} className="space-y-5">
+                  <div className="space-y-1">
+                    <h2 className="text-3xl font-bold capitalize text-white">
                       {groupKey.replace(/[-_]/g, " ")}
                     </h2>
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {movies.slice(0, 6).map((movie: Movie) => (
-                        <article
-                          key={movie._id}
-                          className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-4 transition hover:border-white/20 hover:bg-white/10"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            className="mb-4 h-44 w-full rounded-2xl object-cover"
-                            src={movie.thumb_url || movie.poster_url}
-                            alt={movie.name}
-                          />
-                          <div className="space-y-2">
-                            <p className="text-sm text-zinc-400">
-                              {movie.origin_name || movie.type}
-                            </p>
-                            <h3 className="text-lg font-semibold text-white">
-                              {movie.name}
-                            </h3>
-                            <p className="line-clamp-3 text-sm text-zinc-300">
-                              {movie.content}
-                            </p>
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-                ) : null,
-              )}
-            </div>
-          ) : (
-            <div className="rounded-3xl border border-dashed border-white/20 bg-white/5 p-14 text-center text-zinc-300">
-              No movies found. Check the API configuration or try again later.
-            </div>
-          )}
-        </div>
+                    <div className="h-1 w-16 rounded-full bg-gradient-to-r from-primary via-primary/70 to-transparent" />
+                  </div>
+                  <MovieGrid movies={movies.slice(0, 10)} className="pt-2" />
+                </section>
+              ) : null
+            )}
+          </div>
+        ) : (
+          <div className="rounded-3xl border border-dashed border-white/20 bg-white/5 p-14 text-center text-zinc-300 py-20">
+            No movies found. Check the API configuration or try again later.
+          </div>
+        )}
       </main>
+
+      {/* Footer */}
+      <Footer />
     </MainLayout>
   );
 }

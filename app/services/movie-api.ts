@@ -116,6 +116,11 @@ const normalizeMovie = (raw: OPhimMovieRaw, imageBaseUrl?: string): Movie => ({
   quality: normalizeString(raw.quality),
   lang: normalizeString(raw.lang),
   view: normalizeNumber(raw.view),
+  alternative_names: Array.isArray(raw.alternative_names)
+    ? raw.alternative_names
+        .filter((item): item is string => typeof item === "string")
+    : [],
+  year: normalizeNumber(raw.year),
 });
 
 const buildUrl = (path: string): string =>

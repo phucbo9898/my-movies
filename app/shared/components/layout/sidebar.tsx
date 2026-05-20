@@ -1,7 +1,6 @@
 ﻿"use client";
 
-import * as React from "react";
-import { Genre } from "@/app/types/genre";
+import { Category } from "@/app/types/movie";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Film, Flame, Home, Star, X } from "lucide-react";
 
@@ -15,12 +14,10 @@ const navItems = [
 interface SidebarProps {
   open: boolean;
   onClose: () => void;
-  genres: Genre[];
+  genres: Category[];
 }
 
 export function Sidebar({ open, onClose, genres }: SidebarProps) {
-  const [genresOpen, setGenresOpen] = React.useState(false);
-
   return (
     <aside
       className={cn(
@@ -68,28 +65,13 @@ export function Sidebar({ open, onClose, genres }: SidebarProps) {
         <div className="group relative">
           <button
             type="button"
-            onClick={() => setGenresOpen(!genresOpen)}
-            className={cn(
-              "flex w-full items-center justify-between rounded-3xl border border-white/10 bg-zinc-950/80 px-4 py-3 text-left text-sm text-zinc-200 transition hover:border-white/20 hover:bg-white/10",
-              genresOpen && "lg:border-white/20 lg:bg-white/10",
-            )}
+            className="flex w-full items-center justify-between rounded-3xl border border-white/10 bg-zinc-950/80 px-4 py-3 text-left text-sm text-zinc-200 transition hover:border-white/20 hover:bg-white/10"
           >
             <span className="font-semibold">Genres</span>
-            <ChevronDown
-              className={cn(
-                "h-4 w-4 text-zinc-400 transition",
-                genresOpen && "rotate-180",
-              )}
-            />
+            <ChevronDown className="h-4 w-4 text-zinc-400" />
           </button>
 
-          <div
-            className={cn(
-              "pointer-events-none absolute left-0 right-0 top-full z-20 mt-2 hidden max-h-72 overflow-y-auto rounded-3xl border border-white/10 bg-zinc-950/95 p-3 shadow-2xl shadow-black/40 transition duration-200 custom-scrollbar",
-              genresOpen && "pointer-events-auto block",
-              "lg:group-hover:pointer-events-auto lg:group-hover:block",
-            )}
-          >
+          <div className="pointer-events-none absolute left-0 right-0 top-full z-20 mt-2 hidden max-h-72 overflow-y-auto rounded-3xl border border-white/10 bg-zinc-950/95 p-3 shadow-2xl shadow-black/40 transition duration-200 group-hover:block group-hover:pointer-events-auto">
             {genres.length > 0 ? (
               <div className="grid gap-2">
                 {genres.map((genre) => (
