@@ -37,7 +37,7 @@ export function MovieCard({ movie }: MovieCardProps) {
 
           {/* Quality Badge */}
           {movie.quality && (
-            <div className="absolute left-3 top-3 rounded bg-blue-600 px-2 py-1 text-xs font-semibold text-white">
+            <div className="absolute left-1 top-1 rounded bg-blue-600 px-2 py-1 text-xs font-semibold text-white">
               {movie.quality}
             </div>
           )}
@@ -58,7 +58,7 @@ export function MovieCard({ movie }: MovieCardProps) {
                 {movie.name}
               </h3>
 
-              <div className="mt-1 flex items-center justify-between text-xs text-gray-300">
+              <div className="mt-1 mb-2 flex items-center justify-between text-xs text-gray-300">
                 <span>{movie.episode_current}</span>
                 {movie.year && <span>{movie.year}</span>}
               </div>
