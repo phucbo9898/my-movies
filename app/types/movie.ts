@@ -31,3 +31,18 @@ export interface Movie {
   alternative_names: string[];
   year: number;
 }
+
+export interface MovieDetail extends Movie {
+  episodes?: Episode[];
+  keywords?: string[];
+  images?: Record<string, string[]>;
+}
+
+export interface Episode {
+  name: string;
+  slug: string;
+  filename: string;
+  link_embed: string;
+  link_m3u8: string;
+  server: string;
+}
