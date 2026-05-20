@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Movie } from "@/app/types/movie";
-import { MovieCard } from "./movie-card";
+import { Movie } from '@/app/types/movie';
+import { MovieCard } from './movie-card';
 
 interface MovieGridProps {
   movies: Movie[];
   className?: string;
 }
 
-export function MovieGrid({ movies, className = "" }: MovieGridProps) {
+export function MovieGrid({ movies, className = '' }: MovieGridProps) {
   if (!movies || movies.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
