@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { Menu, Search } from "lucide-react";
+import Link from "next/link";
 
 interface HeaderProps {
   onToggleSidebar: () => void;
@@ -21,7 +22,7 @@ export function Header({ onToggleSidebar, onToggleSearch }: HeaderProps) {
             <Menu className="h-5 w-5" />
           </button>
 
-          <a href="#" className="inline-flex items-center gap-3 text-white">
+          <Link href="/" className="inline-flex items-center gap-3 text-white">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-zinc-950 shadow-lg shadow-primary/20">
               <span className="text-lg font-black">M</span>
             </div>
@@ -29,7 +30,7 @@ export function Header({ onToggleSidebar, onToggleSearch }: HeaderProps) {
               <span className="truncate text-base font-semibold">MyMovies</span>
               <span className="truncate text-sm text-zinc-400">Stream with ease</span>
             </div>
-          </a>
+          </Link>
         </div>
 
         <nav className="hidden items-center gap-6 text-sm text-zinc-400 md:flex">

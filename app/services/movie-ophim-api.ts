@@ -1,6 +1,8 @@
 import { fetcher } from "../lib/fetcher";
-import type { Country, Movie } from "../types/movie";
-import type { Genre } from "../types/genre";
+import type { Country, Episode, Movie, ServerData } from "../types/movie";
+import type { Genre, MovieGenre } from "../types/genre";
+import type { MovieDetail } from "../types/movie-detail";
+import type { PlayerSource } from "../types/player-source";
 
 export const OPHIM_API_BASE_URL = process.env.NEXT_PUBLIC_OPHIM_API_BASE_URL;
 const OPHIM_API_PREFIX = "/v1/api";
@@ -50,8 +52,22 @@ const normalizeStringArray = (value: unknown): string[] => {
   return [];
 };
 
+const getDefaultImageBaseUrl = (): string => {
+  const baseUrl =
+    normalizeString(process.env.NEXT_PUBLIC_OPHIM_IMG_URL) ||
+    "https://img.ophim.live";
+  const path = normalizeString(process.env.NEXT_PUBLIC_OPHIM_PATH);
+
+  if (!path) {
+    return baseUrl.replace(/\/+$/, "");
+  }
+
+  return `${baseUrl.replace(/\/+$/, "")}/${path.replace(/^\/+/, "").replace(/\/+$/, "")}`;
+};
+
 const normalizeImageUrl = (value: unknown, baseUrl?: string): string => {
   const rawValue = normalizeString(value);
+
   if (!rawValue) {
     return "";
   }
@@ -60,21 +76,25 @@ const normalizeImageUrl = (value: unknown, baseUrl?: string): string => {
     return rawValue;
   }
 
-  if (!baseUrl) {
+  const resolvedBaseUrl = normalizeString(baseUrl) || getDefaultImageBaseUrl();
+
+  if (!resolvedBaseUrl) {
     return rawValue;
   }
 
-  return `${baseUrl.replace(/\/+$/, "")}/${rawValue.replace(/^\/+/, "")}`;
+  return `${resolvedBaseUrl.replace(/\/+$/, "")}/${rawValue.replace(/^\/+/, "")}`;
 };
 
 const extractImageBase = (payload: unknown): string | undefined => {
-  if (!isRecord(payload)) {
-    return undefined;
+  if (isRecord(payload)) {
+    const domain = normalizeString(payload.APP_DOMAIN_CDN_IMAGE);
+    const value = pathImg(domain);
+    if (value) {
+      return value;
+    }
   }
 
-  const value = pathImg(normalizeString(payload.APP_DOMAIN_CDN_IMAGE));
-
-  return value || undefined;
+  return getDefaultImageBaseUrl();
 };
 
 const normalizeTaxonomy = (raw: TaxonomyRaw): Genre | Country => ({
@@ -108,7 +128,7 @@ const normalizeMovie = (raw: OPhimMovieRaw, imageBaseUrl?: string): Movie => ({
     ? raw.category.filter(isRecord).map(normalizeTaxonomy)
     : [],
   country: Array.isArray(raw.country)
-    ? raw.country.filter(isRecord).map(normalizeTaxonomy)
+    ? raw.country.filter(isRecord).map(normalizeCountry)
     : [],
   episode_current: normalizeString(raw.episode_current),
   episode_total: normalizeString(raw.episode_total),
@@ -117,18 +137,103 @@ const normalizeMovie = (raw: OPhimMovieRaw, imageBaseUrl?: string): Movie => ({
   lang: normalizeString(raw.lang),
   view: normalizeNumber(raw.view),
   alternative_names: Array.isArray(raw.alternative_names)
-    ? raw.alternative_names
-        .filter((item): item is string => typeof item === "string")
+    ? raw.alternative_names.filter(
+        (item): item is string => typeof item === "string",
+      )
     : [],
   year: normalizeNumber(raw.year),
 });
 
+const normalizeMovieGenre = (raw: TaxonomyRaw): MovieGenre => ({
+  id: normalizeString(raw.id),
+  name: normalizeString(raw.name),
+  slug: normalizeString(raw.slug),
+});
+
+const createPlayerSource = (
+  type: PlayerSource["type"],
+  provider: PlayerSource["provider"],
+  url: unknown,
+): PlayerSource | null => {
+  const normalizedUrl = normalizeString(url);
+
+  if (!normalizedUrl) {
+    return null;
+  }
+
+  return {
+    type,
+    provider,
+    url: normalizedUrl,
+  };
+};
+
+const normalizePlayerSources = (raw: OPhimMovieRaw): PlayerSource[] =>
+  [
+    createPlayerSource("embed", "nguonc", raw.link_embed),
+    createPlayerSource("hls", "ophim", raw.link_m3u8),
+  ].filter((source): source is PlayerSource => source !== null);
+
+const normalizeServerData = (raw: OPhimMovieRaw): ServerData => ({
+  name: normalizeString(raw.name),
+  slug: normalizeString(raw.slug),
+  filename: normalizeString(raw.filename),
+  link_embed: normalizeString(raw.link_embed),
+  link_m3u8: normalizeString(raw.link_m3u8),
+  sources: normalizePlayerSources(raw),
+});
+
+const normalizeEpisode = (raw: OPhimMovieRaw): Episode => ({
+  server_name: normalizeString(raw.server_name),
+  slug: normalizeString(raw.slug),
+  server_data: Array.isArray(raw.server_data)
+    ? raw.server_data.filter(isRecord).map(normalizeServerData)
+    : [],
+});
+
+const normalizeMovieDetail = (
+  raw: OPhimMovieRaw,
+  imageBaseUrl?: string,
+): MovieDetail => ({
+  ...normalizeMovie(raw, imageBaseUrl),
+  category: Array.isArray(raw.category)
+    ? raw.category.filter(isRecord).map(normalizeMovieGenre)
+    : [],
+  episodes: Array.isArray(raw.episodes)
+    ? raw.episodes.filter(isRecord).map(normalizeEpisode)
+    : [],
+});
+
+const extractMoviePayload = (payload: unknown): OPhimMovieRaw | null => {
+  if (!isRecord(payload)) {
+    return null;
+  }
+
+  const data = isRecord(payload.data) ? payload.data : null;
+  const movieRaw =
+    (isRecord(data?.item) ? data.item : null) ??
+    (isRecord(payload.movie) ? payload.movie : null) ??
+    data ??
+    payload;
+
+  return isRecord(movieRaw) ? movieRaw : null;
+};
+
 const buildUrl = (path: string): string =>
   `${OPHIM_API_BASE_URL}${OPHIM_API_PREFIX}${path}`;
 
-const pathImg = (domain: string): string => {
-  const path = process.env.NEXT_PUBLIC_OPHIM_PATH || "";
-  return `${domain.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+const pathImg = (domain: string): string | undefined => {
+  const normalizedDomain = normalizeString(domain).trim();
+  if (!normalizedDomain) {
+    return undefined;
+  }
+
+  const path = normalizeString(process.env.NEXT_PUBLIC_OPHIM_PATH);
+  if (!path) {
+    return normalizedDomain.replace(/\/+$/, "");
+  }
+
+  return `${normalizedDomain.replace(/\/+$/, "")}/${path.replace(/^\/+/, "").replace(/\/+$/, "")}`;
 };
 
 const extractItems = (payload: unknown): OPhimMovieRaw[] => {
@@ -188,6 +293,7 @@ const normalizeHomeGroups = (payload: unknown): HomeMovieGroups => {
 
       if (Array.isArray(value)) {
         result[key] = normalizeMovies(value, parentBaseUrl);
+        console.log(1)
         return result;
       }
 
@@ -196,6 +302,7 @@ const normalizeHomeGroups = (payload: unknown): HomeMovieGroups => {
         if (items.length > 0) {
           const imageBaseUrl = extractImageBase(value) ?? parentBaseUrl;
           result[key] = normalizeMovies(items, imageBaseUrl);
+          console.log(2);
         }
       }
 
@@ -229,6 +336,7 @@ export const getHomeMovies = async (): Promise<HomeMovieGroups> => {
 export const getListingMovies = async (
   slug: string,
   page = 1,
+  limit = 5
 ): Promise<Movie[]> => {
   const normalizedSlug = slug.trim();
   if (!normalizedSlug) {
@@ -236,6 +344,14 @@ export const getListingMovies = async (
   }
 
   const normalizedPage = Number.isFinite(page) && page > 0 ? page : 1;
+  const normalizedLimit = Number.isFinite(limit) && limit > 0 ? limit : 0;
+
+  if (normalizedLimit > 0) {
+    return fetchMovies(
+      `/danh-sach/${encodeURIComponent(normalizedSlug)}?limit=${normalizedLimit}`,
+    );
+  }
+
   return fetchMovies(
     `/danh-sach/${encodeURIComponent(normalizedSlug)}?page=${normalizedPage}`,
   );
@@ -322,16 +438,34 @@ export const getMovieBySlug = async (slug: string): Promise<Movie | null> => {
     buildUrl(`/phim/${encodeURIComponent(normalizedSlug)}`),
   );
 
-  if (!isRecord(payload)) {
+  const movieRaw = extractMoviePayload(payload);
+  if (!movieRaw) {
     return null;
   }
 
-  const movieRaw =
-    (isRecord(payload.data) ? payload.data : null) ??
-    (isRecord(payload.movie) ? payload.movie : null) ??
-    payload;
+  const imageBaseUrl = extractImageBase(payload);
+  return normalizeMovie(movieRaw, imageBaseUrl);
+};
 
-  return isRecord(movieRaw) ? normalizeMovie(movieRaw) : null;
+export const getMovieDetail = async (
+  slug: string,
+): Promise<MovieDetail | null> => {
+  const normalizedSlug = slug.trim();
+  if (!normalizedSlug) {
+    return null;
+  }
+
+  const payload = await fetcher<unknown>(
+    buildUrl(`/phim/${encodeURIComponent(normalizedSlug)}`),
+  );
+
+  const movieRaw = extractMoviePayload(payload);
+  if (!movieRaw) {
+    return null;
+  }
+
+  const imageBaseUrl = extractImageBase(payload);
+  return normalizeMovieDetail(movieRaw, imageBaseUrl);
 };
 
 export const getMovieImages = async (

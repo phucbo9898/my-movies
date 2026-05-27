@@ -20,13 +20,13 @@ export function MovieCard({ movie }: MovieCardProps) {
             fill
             className="object-cover transform transition-transform duration-700 ease-out group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority
           />
-
           {/* Cinematic Gradient (always subtle, stronger on hover) */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent pointer-events-none transition-opacity duration-300" />
 
           {/* Decorative bottom fade to make titles pop */}
-          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/90 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-linear-to-t from-black/90 to-transparent pointer-events-none" />
 
           {/* Status Badge */}
           {movie.status && (

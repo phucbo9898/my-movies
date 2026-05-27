@@ -1,3 +1,5 @@
+import { PlayerSource } from "./player-source";
+
 export interface Category {
   name: string;
   slug: string;
@@ -30,4 +32,19 @@ export interface Movie {
   view: number;
   alternative_names: string[];
   year: number;
+}
+
+export interface Episode {
+  server_name: string;
+  slug: string;
+  server_data: ServerData[];
+}
+
+export interface ServerData {
+  name: string;
+  slug: string;
+  filename: string;
+  link_embed: string;
+  link_m3u8: string;
+  sources: PlayerSource[];
 }
