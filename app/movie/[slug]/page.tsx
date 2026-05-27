@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import MainLayout from "../../shared/components/layout/main-layout";
 import { EpisodeList } from "../../features/movie/components/episode-list";
 import { MovieDetailHero } from "../../features/movie/components/movie-detail-hero";
-import { getGenres, getMovieDetail } from "../../services/movie-ophim-api";
+import { getMovieDetail } from "../../services/movie-ophim-api";
 import { MovieMeta } from "@/app/features/movie/components/movie-meta";
 
 interface MovieDetailPageProps {
@@ -14,9 +14,8 @@ export default async function MovieDetailPage({
 }: MovieDetailPageProps) {
   const { slug } = await params;
 
-  const [movie, genres] = await Promise.all([
+  const [movie] = await Promise.all([
     getMovieDetail(slug),
-    getGenres(),
   ]);
 
   if (!movie) {
@@ -24,7 +23,7 @@ export default async function MovieDetailPage({
   }
 
   return (
-    <MainLayout genres={genres}>
+    <MainLayout>
       <main className="space-y-8 pb-12 pt-6">
         <MovieDetailHero movie={movie} />
 

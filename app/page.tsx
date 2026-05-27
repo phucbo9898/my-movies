@@ -4,7 +4,6 @@
   getMoviesByGenre,
 } from "./services/movie-ophim-api";
 import MainLayout from "./shared/components/layout/main-layout";
-import Banner from "./features/movie/components/banner";
 import { HomeMovieSection } from "./features/movie/components/home-movie-section";
 import { Footer } from "./shared/components/layout/footer";
 
@@ -54,12 +53,8 @@ export default async function Home() {
   );
 
   return (
-    <MainLayout genres={genres}>
+    <MainLayout bannerMovies={bannerMovies}>
       <main className="space-y-12">
-        {/* Banner */}
-        <Banner movies={bannerMovies} />
-
-        {/* Movie Collections */}
         {hasMovies ? (
           <div className="space-y-12 pb-20">
             {categoryMovieGroups.map((group) =>

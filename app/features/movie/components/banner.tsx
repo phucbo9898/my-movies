@@ -26,16 +26,6 @@ export default function Banner({ movies }: BannerProps) {
     [total],
   );
 
-  useEffect(() => {
-    if (isPaused || total <= 1) return;
-
-    const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % total);
-    }, 10000);
-
-    return () => clearInterval(id);
-  }, []);
-
   // update effect to depend on pause/total
   useEffect(() => {
     if (isPaused || total <= 1) return;
@@ -75,10 +65,10 @@ export default function Banner({ movies }: BannerProps) {
   }
 
   return (
-    <section className="relative">
+    <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
       <div
         ref={containerRef}
-        className="relative w-full overflow-hidden rounded-2xl touch-pan-y"
+        className="relative w-full overflow-hidden touch-pan-y"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}

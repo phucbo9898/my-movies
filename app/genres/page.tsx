@@ -7,7 +7,7 @@ export default async function GenresPage() {
   const genres = await getGenres();
 
   return (
-    <MainLayout genres={genres}>
+    <MainLayout>
       <main className="space-y-8">
         {/* Header */}
         <div className="pt-6">

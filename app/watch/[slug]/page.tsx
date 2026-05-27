@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { PlayerSwitcher } from "@/app/features/watch/components/player-switcher";
-import { getGenres, getMovieDetail } from "@/app/services/movie-ophim-api";
+import { getMovieDetail } from "@/app/services/movie-ophim-api";
 import { getNguonCEpisodes } from "@/app/services/movie-nguonc-api";
 import type { PlayerSource } from "@/app/types/player-source";
 import type { Episode, ServerData } from "@/app/types/movie";
@@ -194,9 +194,8 @@ export default async function WatchPage({
 
   const provider = normalizeProvider(parseQueryValue(query.provider));
 
-  const [movie, genres, nguoncEpisodes] = await Promise.all([
+  const [movie, nguoncEpisodes] = await Promise.all([
     getMovieDetail(slug),
-    getGenres(),
     provider === "nguonc"
       ? getNguonCEpisodes(slug)
       : Promise.resolve([] as Episode[]),
@@ -222,7 +221,7 @@ export default async function WatchPage({
   );
 
   return (
-    <MainLayout genres={genres}>
+    <MainLayout>
       <main className="space-y-8 pb-12 pt-6">
         <section className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(300px,1fr)]">
           <div className="rounded-[28px] border border-white/10 bg-zinc-950/85 p-3 sm:p-4">

@@ -1,5 +1,5 @@
 import MainLayout from "@/app/shared/components/layout/main-layout";
-import { getGenres, getMoviesByGenre } from "@/app/services/movie-ophim-api";
+import { getMoviesByGenre } from "@/app/services/movie-ophim-api";
 import { MovieGrid } from "@/app/features/movie/components/movie-grid";
 import { Footer } from "@/app/shared/components/layout/footer";
 
@@ -11,16 +11,14 @@ export default async function GenreDetailPage({
   params,
 }: GenreDetailPageProps) {
   const { slug } = await params;
-  const [genres, movies] = await Promise.all([
-    getGenres(),
+  const [movies] = await Promise.all([
     getMoviesByGenre(slug, 1),
   ]);
 
-  const genre = genres.find((g) => g.slug === slug);
-  const genreName = genre?.name || "Danh Mục";
+  const genreName = "Danh Mục"; // You'll need to implement a function to get the genre name by slug
 
   return (
-    <MainLayout genres={genres}>
+    <MainLayout>
       <main className="space-y-8">
         {/* Header */}
         <div className="pt-6">
