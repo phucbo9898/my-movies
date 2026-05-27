@@ -11,7 +11,7 @@ interface MovieCardProps {
 export function MovieCard({ movie }: MovieCardProps) {
   return (
     <Link href={`/movie/${movie.slug}`}>
-      <div className="group relative overflow-hidden rounded-lg bg-gradient-to-b from-gray-900/80 to-gray-900/60 shadow-xl transition-transform duration-300 hover:scale-105">
+      <div className="group relative overflow-hidden rounded-lg bg-linear-to-b from-gray-900/80 to-gray-900/60 shadow-xl transition-transform duration-300 hover:scale-105">
         {/* Thumbnail Container */}
         <div className="relative h-72 w-full overflow-hidden bg-gray-800 dark:bg-gray-800">
           <Image
@@ -20,7 +20,6 @@ export function MovieCard({ movie }: MovieCardProps) {
             fill
             className="object-cover transform transition-transform duration-700 ease-out group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority
           />
           {/* Cinematic Gradient (always subtle, stronger on hover) */}
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent pointer-events-none transition-opacity duration-300" />

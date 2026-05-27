@@ -102,9 +102,12 @@ export function MovieDetailHero({ movie }: MovieDetailHeroProps) {
             <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-200">
               Description
             </h2>
-            <p className="max-w-3xl leading-7 text-zinc-100/95">
-              {movie.content || "No overview available."}
-            </p>
+            {movie.content && (
+              <div
+                className="max-w-3xl leading-7 text-zinc-100/95"
+                dangerouslySetInnerHTML={{ __html: movie.content }}
+              ></div>
+            )}
           </div>
 
           <div className="pt-2">

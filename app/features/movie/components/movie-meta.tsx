@@ -20,15 +20,6 @@ export function MovieMeta({ movie }: MovieMetaProps) {
       <div className="space-y-5">
         <div className="rounded-[24px] border border-white/10 bg-white/5 p-5 sm:p-6">
           <p className="text-xs uppercase tracking-[0.24em] text-zinc-400">
-            Overview
-          </p>
-          <p className="mt-3 leading-7 text-zinc-100/95">
-            {movie.content || "No overview available."}
-          </p>
-        </div>
-
-        <div className="rounded-[24px] border border-white/10 bg-white/5 p-5 sm:p-6">
-          <p className="text-xs uppercase tracking-[0.24em] text-zinc-400">
             Genres
           </p>
           <div className="mt-3 flex flex-wrap gap-2">

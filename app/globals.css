@@ -155,3 +155,12 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgb(82 82 91);
 }
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

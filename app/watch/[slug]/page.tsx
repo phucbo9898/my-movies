@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { PlayerSwitcher } from "@/app/features/watch/components/player-switcher";
 import { getGenres, getMovieDetail } from "@/app/services/movie-ophim-api";
+import { getNguonCEpisodes } from "@/app/services/movie-nguonc-api";
 import type { PlayerSource } from "@/app/types/player-source";
 import type { Episode, ServerData } from "@/app/types/movie";
 import MainLayout from "@/app/shared/components/layout/main-layout";
@@ -191,17 +192,30 @@ export default async function WatchPage({
   const { slug } = await params;
   const query = (await searchParams) ?? {};
 
-  const [movie, genres] = await Promise.all([
+  const provider = normalizeProvider(parseQueryValue(query.provider));
+
+  const [movie, genres, nguoncEpisodes] = await Promise.all([
     getMovieDetail(slug),
     getGenres(),
+    provider === "nguonc"
+      ? getNguonCEpisodes(slug)
+      : Promise.resolve([] as Episode[]),
   ]);
 
   if (!movie) {
     notFound();
   }
 
+  const movieForPlayback =
+    provider === "nguonc"
+      ? {
+          ...movie,
+          episodes: nguoncEpisodes,
+        }
+      : movie;
+
   const playable = getSelectedPlayback(
-    movie,
+    movieForPlayback,
     parseQueryValue(query.episode),
     parseQueryValue(query.provider),
     parseQueryValue(query.server),
@@ -283,9 +297,12 @@ export default async function WatchPage({
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-200">
                   Synopsis
                 </h2>
-                <p className="leading-7 text-zinc-100/95">
-                  {movie.content || "No overview available."}
-                </p>
+                {movie.content && (
+                  <div
+                    className="mt-2 text-sm text-zinc-300 sm:block border border-white/20 inline-block px-2 py-1 rounded"
+                    dangerouslySetInnerHTML={{ __html: movie.content }}
+                  ></div>
+                )}
               </div>
 
               {playable ? (
