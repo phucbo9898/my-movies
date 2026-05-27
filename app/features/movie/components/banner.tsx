@@ -65,7 +65,7 @@ export default function Banner({ movies }: BannerProps) {
   }
 
   return (
-    <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
+    <section className="relative left-1/2 right-1/2 -translate-x-1/2">
       <div
         ref={containerRef}
         className="relative w-full overflow-hidden touch-pan-y"

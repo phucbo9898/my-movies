@@ -5,6 +5,7 @@ import { Movie } from "@/app/types/movie";
 import { Header } from "./header";
 import { Container } from "./container";
 import Banner from "@/app/features/movie/components/banner";
+import { Footer } from "./footer";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -31,6 +32,8 @@ export default function MainLayout({
           <Container className="pb-24 md:pb-0">{children}</Container>
         </div>
       </div>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

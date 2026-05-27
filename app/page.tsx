@@ -73,9 +73,6 @@ export default async function Home() {
           </div>
         )}
       </main>
-
-      {/* Footer */}
-      <Footer />
     </MainLayout>
   );
 }
