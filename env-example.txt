@@ -1,0 +1,4 @@
+NEXT_PUBLIC_OPHIM_API_BASE_URL=https://ophim1.com
+NEXT_PUBLIC_OPHIM_IMG_URL=https://img.ophim.live/
+NEXT_PUBLIC_OPHIM_PATH=/uploads/movies/
+NEXT_PUBLIC_NGUONC_API_BASE_URL=https://phim.nguonc.com/api
