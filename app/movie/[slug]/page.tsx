@@ -15,7 +15,7 @@ export default async function MovieDetailPage({
   const { slug } = await params;
 
   const [movie] = await Promise.all([
-    getMovieDetail(slug),
+    getMovieDetail(decodeURIComponent(slug)),
   ]);
 
   if (!movie) {
