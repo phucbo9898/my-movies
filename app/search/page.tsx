@@ -43,10 +43,10 @@ async function SearchResults({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold text-white mb-2">
+        <h2 className="text-2xl font-semibold mb-2">
           Search Results
         </h2>
-        <p className="text-zinc-400">
+        <p className="text-zinc-500">
           Found {searchResults.totalItems} movies for &quot;{keyword}&quot;
         </p>
       </div>

@@ -15,9 +15,6 @@ export default async function MovieDetailPage({
   const { slug } = await params;
 
   const moviePromise = getMovieDetail(decodeURIComponent(slug));
-
-  // We still need to detect notFound when movie is missing during SSR route handling.
-  // Await the promise briefly to check existence, but don't block full render of the page content.
   const movieCheck = await moviePromise;
   if (!movieCheck) {
     notFound();

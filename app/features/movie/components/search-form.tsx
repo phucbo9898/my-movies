@@ -44,14 +44,14 @@ export function SearchForm() {
           placeholder="Search movies, series, casts..."
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-12 pr-12 text-white placeholder-zinc-500 transition focus:border-white/20 focus:bg-white/10 focus:outline-none dark:bg-zinc-900/40 dark:border-zinc-700/40 dark:focus:bg-zinc-900/60 dark:focus:border-zinc-600/40"
+          className="w-full rounded-2xl border border-slate-300 bg-white/5 py-3 pl-12 pr-12 placeholder-zinc-500 transition focus:border-blue-500 focus:bg-white/10 focus:outline-none dark:bg-zinc-900/40 dark:border-zinc-700/40 dark:focus:bg-zinc-900/60 dark:focus:border-zinc-600/40"
         />
 
         {keyword && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute inset-y-0 right-0 flex items-center pr-4 hover:text-zinc-300 transition"
+            className="absolute inset-y-0 right-0 flex items-center pr-4 hover:text-blue-700 transition cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>

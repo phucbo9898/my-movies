@@ -77,6 +77,8 @@ export function HlsPlayer({
     const hls = new Hls({
       enableWorker: true,
       lowLatencyMode: false,
+      capLevelToPlayerSize: true,
+      startLevel: -1,
     });
 
     const handleError = (_event: unknown, data: ErrorData) => {
@@ -87,8 +89,8 @@ export function HlsPlayer({
 
     hls.on(Hls.Events.ERROR, handleError);
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      hls.currentLevel = hls.levels.length - 1;
       setIsReady(true);
-
       if (autoPlay) {
         video.muted = true;
         void video.play().catch(() => undefined);
@@ -121,7 +123,7 @@ export function HlsPlayer({
       <video
         ref={videoRef}
         className={cn(
-          "h-full w-full object-cover transition-opacity duration-300",
+          "h-full w-full object-contain transition-opacity duration-300",
           isReady ? "opacity-100" : "opacity-80",
         )}
         controls={controls}

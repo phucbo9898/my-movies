@@ -60,7 +60,7 @@ export function HomeMovieSection({
           <div className="h-1 w-16 rounded-full bg-linear-to-r from-primary via-primary/70 to-transparent" />
         </div>
 
-        <div className="-mx-4 overflow-hidden pb-4 sm:-mx-6 lg:-mx-8">
+        <div className="-mx-3 overflow-hidden pb-4 sm:-mx-4 lg:-mx-5">
           <div className="flex gap-4 px-4 sm:px-6 lg:px-8 overflow-x-auto overflow-y-hidden scroll-smooth touch-pan-x hide-scrollbar">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
@@ -159,10 +159,10 @@ export function HomeMovieSection({
           </button>
         </div>
 
-        <div className="-mx-4 overflow-hidden pb-4 sm:-mx-6 lg:-mx-8">
+        <div className="-mx-3 overflow-hidden pb-4 sm:-mx-4 lg:-mx-5">
           <div
             ref={containerRef}
-            className="flex gap-4 px-4 sm:px-6 lg:px-8 overflow-x-auto overflow-y-hidden scroll-smooth touch-pan-x hide-scrollbar snap-x snap-mandatory overscroll-x-contain"
+            className="flex gap-2 px-4 sm:px-6 lg:px-8 overflow-x-auto overflow-y-hidden scroll-smooth touch-pan-x hide-scrollbar snap-x snap-mandatory overscroll-x-contain"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}

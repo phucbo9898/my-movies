@@ -22,6 +22,23 @@ export function EpisodeList({
   const [nguoncEpisodes, setNguoncEpisodes] = useState<Episode[]>([]);
   const [hasFetchedNguonc, setHasFetchedNguonc] = useState(false);
 
+  const normalizeEpisodeName = (name: string): string => {
+    const value = name.trim();
+
+    // Only number
+    if (/^\d+$/.test(value)) {
+      return `Tập ${parseInt(value)}`;
+    }
+
+    // Episode 1 -> Tập 1
+    const episodeMatch = value.match(/^episode\s+(\d+)$/i);
+    if (episodeMatch) {
+      return `Tập ${episodeMatch[1]}`;
+    }
+
+    return value;
+  };
+
   useEffect(() => {
     if (activeTab !== "nguonc") return;
 
@@ -54,18 +71,20 @@ export function EpisodeList({
       <Link
         key={`${server.slug}-${server.filename}`}
         href={href}
-        className={`rounded-xl border px-3 py-2 text-left transition ${
+        className={`rounded-xl border px-3 py-2 text-center transition ${
           isActive
-            ? "border-primary bg-primary text-zinc-950"
+            ? "border-primary bg-primary text-white"
             : "border-white/10 bg-zinc-950/60 text-white hover:border-white/20 hover:bg-zinc-900"
         }`}
       >
-        <p className="text-sm font-medium">{server.name}</p>
-        <p
+        <p className="text-sm font-medium">
+          {normalizeEpisodeName(`${server.name}`)}
+        </p>
+        {/* <p
           className={`mt-1 truncate text-xs ${isActive ? "text-zinc-900/80" : "text-zinc-400"}`}
         >
           {server.filename}
-        </p>
+        </p> */}
       </Link>
     );
   };
@@ -86,8 +105,8 @@ export function EpisodeList({
             onClick={() => setActiveTab("ophim")}
             className={`rounded-md px-3 py-1 text-sm font-medium transition ${
               activeTab === "ophim"
-                ? "bg-primary text-zinc-950"
-                : "bg-white/5 text-white hover:bg-white/10"
+                ? "bg-primary text-white"
+                : "bg-zinc-500 text-white hover:bg-zinc-700"
             }`}
           >
             OPhim
@@ -97,8 +116,8 @@ export function EpisodeList({
             onClick={() => setActiveTab("nguonc")}
             className={`rounded-md px-3 py-1 text-sm font-medium transition ${
               activeTab === "nguonc"
-                ? "bg-primary text-zinc-950"
-                : "bg-white/5 text-white hover:bg-white/10"
+                ? "bg-primary text-white"
+                : "bg-zinc-500 text-white hover:bg-zinc-700"
             }`}
           >
             NguonC
@@ -107,7 +126,7 @@ export function EpisodeList({
       </div>
 
       {activeTab === "ophim" && (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="gap-3">
           {episodes.map((episode, episodeIndex) => {
             const isActive =
               selectedSlug === episode.slug ||
@@ -122,12 +141,10 @@ export function EpisodeList({
                 key={`${episode.server_name}-${episode.slug}-${episodeIndex}`}
                 className="rounded-2xl border border-white/10 bg-white/5 p-4"
               >
-                <p className="text-sm font-semibold text-white">
-                  {episode.server_name}
-                </p>
+                <p className="text-sm font-semibold">{episode.server_name}</p>
                 <p className="mt-1 text-sm text-zinc-300">{episode.slug}</p>
 
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                <div className="mt-3 gap-2 grid grid-cols-3 sm:grid-cols-8">
                   {episode.server_data.map((server) =>
                     renderServerButton(server, isActive),
                   )}
@@ -147,18 +164,16 @@ export function EpisodeList({
               No NguonC sources available.
             </p>
           ) : (
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="gap-3">
               {nguoncEpisodes.map((episode, idx) => (
                 <div
                   key={`${episode.server_name}-${episode.slug}-${idx}`}
                   className="rounded-2xl border border-white/10 bg-white/5 p-4"
                 >
-                  <p className="text-sm font-semibold text-white">
-                    {episode.server_name}
-                  </p>
+                  <p className="text-sm font-semibold">{episode.server_name}</p>
                   <p className="mt-1 text-sm text-zinc-300">{episode.slug}</p>
 
-                  <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-8">
                     {episode.server_data.map((server) => {
                       const embed =
                         server.link_embed || server.sources?.[0]?.url || "";
@@ -176,11 +191,10 @@ export function EpisodeList({
                         <Link
                           key={`${server.slug}-${server.filename}`}
                           href={href}
-                          className="rounded-xl border px-3 py-2 text-left transition border-white/10 bg-zinc-950/60 text-white hover:border-white/20 hover:bg-zinc-900"
+                          className="rounded-xl border px-3 py-2 text-center transition border-white/10 bg-zinc-950/60 text-white hover:border-white/20 hover:bg-zinc-900"
                         >
-                          <p className="text-sm font-medium">{server.name}</p>
-                          <p className="mt-1 truncate text-xs text-zinc-400">
-                            {server.filename}
+                          <p className="text-sm font-medium">
+                            {normalizeEpisodeName(server.name)}
                           </p>
                         </Link>
                       );

@@ -60,10 +60,10 @@ export default function BottomNav() {
           </div>
           <div className="flex-1">
             <NavItem
-              href="/movie"
+              href="/search"
               label="Movie"
               Icon={Film}
-              active={pathname?.startsWith("/movie") || pathname === "/search"}
+              active={pathname?.startsWith("/search") || pathname === "/search"}
             />
           </div>
         </div>

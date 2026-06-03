@@ -11,9 +11,9 @@ interface MovieCardProps {
 export function MovieCard({ movie }: MovieCardProps) {
   return (
     <Link href={`/movie/${movie.slug}`}>
-      <div className="group relative overflow-hidden rounded-xl bg-card transition-transform duration-300 hover:scale-[1.03] hover:shadow-md">
+      <div className="group relative overflow-hidden bg-card transition-transform duration-300 hover:scale-[1.03] hover:shadow-md">
         {/* Thumbnail Container */}
-        <div className="relative h-56 w-full overflow-hidden rounded-lg bg-muted sm:h-64 md:h-72 lg:h-80">
+        <div className="relative h-72 w-full overflow-hidden bg-muted sm:h-64 md:h-72 lg:h-80">
           <Image
             src={movie.thumb_url || movie.poster_url}
             alt={movie.name}
@@ -28,17 +28,17 @@ export function MovieCard({ movie }: MovieCardProps) {
           {/* Decorative bottom fade to make titles pop */}
           <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-linear-to-t from-black/90 to-transparent pointer-events-none" />
 
-          {/* Status Badge */}
-          {movie.status && (
-            <div className="absolute right-3 top-3 rounded bg-red-600 px-2 py-1 text-xs font-semibold text-white">
-              {movie.status}
+          {/* Quality Badge */}
+          {movie.quality && (
+            <div className="absolute left-3 top-3 rounded bg-blue-600 px-2 py-1 text-xs font-semibold text-white">
+              {movie.quality}
             </div>
           )}
 
-          {/* Quality Badge */}
-          {movie.quality && (
-            <div className="absolute left-1 top-1 rounded bg-blue-600 px-2 py-1 text-xs font-semibold text-white">
-              {movie.quality}
+          {/* Status Badge */}
+          {movie.episode_current && (
+            <div className="absolute right-5 top-3 rounded bg-red-600 px-2 py-1 text-xs font-semibold text-white">
+              {movie.episode_current}
             </div>
           )}
 
@@ -54,13 +54,12 @@ export function MovieCard({ movie }: MovieCardProps) {
           {/* Bottom info: title + meta overlayed on poster */}
           <div className="absolute left-0 right-0 bottom-0 p-3">
             <div className="transform translate-y-4 opacity-90 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-              <h3 className="line-clamp-2 text-sm font-semibold text-card-foreground">
+              <h3 className="line-clamp-2 text-sm font-semibold text-white">
                 {movie.name}
               </h3>
 
-              <div className="mt-1 mb-2 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{movie.episode_current}</span>
-                {movie.year && <span>{movie.year}</span>}
+              <div className="mt-1 mb-2 flex items-center justify-between text-xs text-white">
+                <span>{movie.origin_name}</span>
               </div>
             </div>
           </div>

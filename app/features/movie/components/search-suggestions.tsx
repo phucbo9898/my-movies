@@ -52,12 +52,12 @@ export function SearchSuggestions() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-zinc-400" />
-              <h3 className="font-semibold text-white">Recent Searches</h3>
+              <Clock className="h-5 w-5" />
+              <h3 className="font-semibold">Recent Searches</h3>
             </div>
             <button
               onClick={handleClearRecent}
-              className="text-xs text-zinc-400 hover:text-white transition"
+              className="text-xs hover:text-blue-500 transition"
             >
               Clear
             </button>
@@ -67,7 +67,7 @@ export function SearchSuggestions() {
               <Link
                 key={search}
                 href={`/search?q=${encodeURIComponent(search)}`}
-                className="px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-sm text-zinc-300 transition hover:bg-white/10 hover:border-white/20"
+                className="px-3 py-2 rounded-lg border border-blue-300 text-sm transition hover:border-blue-500"
               >
                 {search}
               </Link>
