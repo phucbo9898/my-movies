@@ -28,7 +28,7 @@ export default function MainLayout({
       )}
 
       <div className="relative flex flex-1">
-        <div className="flex-1">
+        <div className="flex-1 w-full">
           <Container className="pb-24 md:pb-0">{children}</Container>
         </div>
       </div>
