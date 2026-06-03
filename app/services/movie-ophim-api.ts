@@ -12,6 +12,14 @@ export type MoviePeoples = Record<string, unknown>;
 export type MovieKeywords = string[];
 export type HomeMovieGroups = Record<string, Movie[]>;
 
+export interface SearchMoviesResult {
+  movies: Movie[];
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+}
+
 type OPhimMovieRaw = Record<string, unknown>;
 type TaxonomyRaw = Record<string, unknown>;
 
@@ -293,7 +301,7 @@ const normalizeHomeGroups = (payload: unknown): HomeMovieGroups => {
 
       if (Array.isArray(value)) {
         result[key] = normalizeMovies(value, parentBaseUrl);
-        console.log(1)
+        console.log(1);
         return result;
       }
 
@@ -310,6 +318,39 @@ const normalizeHomeGroups = (payload: unknown): HomeMovieGroups => {
     },
     {},
   );
+};
+
+const getSearchPagination = (payload: unknown) => {
+  if (!isRecord(payload)) {
+    return {
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 0,
+      itemsPerPage: 10,
+    };
+  }
+
+  const data = isRecord(payload.data) ? payload.data : null;
+  const params = isRecord(data?.params) ? data.params : null;
+  const pagination = isRecord(params?.pagination) ? params.pagination : null;
+
+  const totalItems = normalizeNumber(pagination?.totalItems);
+  const itemsPerPage = Math.max(
+    1,
+    normalizeNumber(pagination?.totalItemsPerPage) || 10,
+  );
+  const currentPage = Math.max(
+    1,
+    normalizeNumber(pagination?.currentPage) || 1,
+  );
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+
+  return {
+    currentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
+  };
 };
 
 const fetchMovies = async (path: string): Promise<Movie[]> => {
@@ -336,7 +377,7 @@ export const getHomeMovies = async (): Promise<HomeMovieGroups> => {
 export const getListingMovies = async (
   slug: string,
   page = 1,
-  limit = 5
+  limit = 5,
 ): Promise<Movie[]> => {
   const normalizedSlug = slug.trim();
   if (!normalizedSlug) {
@@ -360,16 +401,35 @@ export const getListingMovies = async (
 export const searchMovies = async (
   keyword: string,
   page = 1,
-): Promise<Movie[]> => {
+): Promise<SearchMoviesResult> => {
   const trimmed = keyword.trim();
   if (!trimmed) {
-    return [];
+    return {
+      movies: [],
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 0,
+      itemsPerPage: 10,
+    };
   }
 
   const normalizedPage = Number.isFinite(page) && page > 0 ? page : 1;
-  return fetchMovies(
-    `/tim-kiem?keyword=${encodeURIComponent(trimmed)}&page=${normalizedPage}`,
+  const payload = await fetcher<unknown>(
+    buildUrl(
+      `/tim-kiem?keyword=${encodeURIComponent(trimmed)}&page=${normalizedPage}`,
+    ),
   );
+
+  const imageBaseUrl = extractImageBase(payload);
+  const movies = extractItems(payload).map((item) =>
+    normalizeMovie(item, imageBaseUrl),
+  );
+  const pagination = getSearchPagination(payload);
+
+  return {
+    movies,
+    ...pagination,
+  };
 };
 
 export const getGenres = async (): Promise<Genre[]> =>

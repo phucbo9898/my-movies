@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Movie } from "@/app/types/movie";
 import { MovieCard } from "./movie-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface HomeMovieSectionProps {
   title: string;
@@ -11,7 +12,7 @@ interface HomeMovieSectionProps {
 }
 
 const SLIDE_GAP = 16;
-const CARD_MIN_WIDTH = 240;
+const CARD_MIN_WIDTH = 220;
 
 export function HomeMovieSection({
   title,
@@ -48,6 +49,32 @@ export function HomeMovieSection({
     container.addEventListener("scroll", updateButtons, { passive: true });
     return () => container.removeEventListener("scroll", updateButtons);
   }, [updateButtons, slideItems.length]);
+
+  if (!movies || movies.length === 0) {
+    return (
+      <section className={`space-y-5 ${className}`}>
+        <div className="space-y-1">
+          <h2 className="text-3xl font-bold capitalize text-blue-500">
+            {title}
+          </h2>
+          <div className="h-1 w-16 rounded-full bg-linear-to-r from-primary via-primary/70 to-transparent" />
+        </div>
+
+        <div className="-mx-4 overflow-hidden pb-4 sm:-mx-6 lg:-mx-8">
+          <div className="flex gap-4 px-4 sm:px-6 lg:px-8 overflow-x-auto overflow-y-hidden scroll-smooth touch-pan-x hide-scrollbar">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="min-w-55 shrink-0 sm:min-w-60 lg:min-w-65"
+              >
+                <Skeleton className="h-44 sm:h-56 rounded-xl" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const getSlideDistance = () => {
     const container = containerRef.current;
@@ -135,7 +162,7 @@ export function HomeMovieSection({
         <div className="-mx-4 overflow-hidden pb-4 sm:-mx-6 lg:-mx-8">
           <div
             ref={containerRef}
-            className="flex gap-4 px-4 sm:px-6 lg:px-8 overflow-x-auto overflow-y-hidden scroll-smooth touch-pan-x hide-scrollbar"
+            className="flex gap-4 px-4 sm:px-6 lg:px-8 overflow-x-auto overflow-y-hidden scroll-smooth touch-pan-x hide-scrollbar snap-x snap-mandatory overscroll-x-contain"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
@@ -143,7 +170,7 @@ export function HomeMovieSection({
             {slideItems.map((movie) => (
               <div
                 key={movie._id}
-                className="slide-item min-w-55 shrink-0 sm:min-w-60 lg:min-w-65 overflow-hidden"
+                className="slide-item min-w-55 shrink-0 sm:min-w-60 lg:min-w-65 snap-start overflow-hidden"
               >
                 <MovieCard movie={movie} />
               </div>

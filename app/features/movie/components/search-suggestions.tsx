@@ -2,16 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { TrendingUp, Clock } from "lucide-react";
-
-const TRENDING_SEARCHES = [
-  "Avengers",
-  "Spider-Man",
-  "The Last of Us",
-  "Inception",
-  "Interstellar",
-  "Breaking Bad",
-];
+import { Clock } from "lucide-react";
 
 function getRecentSearches(): string[] {
   if (typeof window === "undefined") return [];
@@ -38,7 +29,7 @@ export function SearchSuggestions() {
   return (
     <div className="space-y-6">
       {/* Trending Searches */}
-      <div>
+      {/* <div>
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="h-5 w-5 text-primary" />
           <h3 className="font-semibold text-white">Trending Now</h3>
@@ -54,7 +45,7 @@ export function SearchSuggestions() {
             </Link>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Recent Searches */}
       {recentSearches.length > 0 && (

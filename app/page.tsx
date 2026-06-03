@@ -4,8 +4,10 @@
   getMoviesByGenre,
 } from "./services/movie-ophim-api";
 import MainLayout from "./shared/components/layout/main-layout";
-import { HomeMovieSection } from "./features/movie/components/home-movie-section";
-import { Footer } from "./shared/components/layout/footer";
+import BannerWrapper from "./features/movie/components/banner-wrapper";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import MovieSectionWrapper from "./features/movie/components/movie-section-wrapper";
 
 const HOME_CATEGORIES = [
   { title: "Phim hoạt hình", slug: "hoat-hinh", source: "listing" as const },
@@ -39,36 +41,51 @@ const getCategoryMovies = async (slug: string, source: "genre" | "listing") => {
 export default async function Home() {
   const genres = await getGenres();
   const listingSlug = genres.length > 0 ? genres[0].slug : "phim-le";
-  const bannerMovies = await getListingMovies(listingSlug, 1, 5);
+  const bannerPromise = getListingMovies(listingSlug, 1, 5);
 
-  const categoryMovieGroups = await Promise.all(
-    HOME_CATEGORIES.map(async (category) => ({
-      title: category.title,
-      movies: await getCategoryMovies(category.slug, category.source),
-    })),
-  );
+  const categoryPromises = HOME_CATEGORIES.map((category) => ({
+    title: category.title,
+    moviesPromise: getCategoryMovies(category.slug, category.source),
+  }));
 
-  const hasMovies = categoryMovieGroups.some(
-    (group) => group.movies.length > 0,
-  );
+  // We'll optimistically assume there will be movies; each section streams independently.
+  const hasMovies = true;
 
   return (
-    <MainLayout bannerMovies={bannerMovies}>
-      <main className="space-y-12">
+    <MainLayout
+      banner={
+        <Suspense
+          fallback={
+            <div className="px-4 sm:px-6 lg:px-8">
+              <Skeleton className="w-full h-44 sm:h-56 rounded-2xl" />
+            </div>
+          }
+        >
+          <BannerWrapper moviesPromise={bannerPromise} />
+        </Suspense>
+      }
+    >
+      <main className="space-y-12 py-6">
         {hasMovies ? (
-          <div className="space-y-12 pb-20">
-            {categoryMovieGroups.map((group) =>
-              group.movies.length > 0 ? (
-                <HomeMovieSection
-                  key={group.title}
+          <div className="space-y-12 pb-24">
+            {categoryPromises.map((group) => (
+              <Suspense
+                key={group.title}
+                fallback={
+                  <div className="px-4 sm:px-6 lg:px-8">
+                    <Skeleton className="w-full h-36 rounded-xl mb-4" />
+                  </div>
+                }
+              >
+                <MovieSectionWrapper
                   title={group.title}
-                  movies={group.movies}
+                  moviesPromise={group.moviesPromise}
                 />
-              ) : null,
-            )}
+              </Suspense>
+            ))}
           </div>
         ) : (
-          <div className="rounded-3xl border border-dashed border-white/20 bg-white/5 p-14 text-center text-zinc-300 py-20">
+          <div className="rounded-3xl border border-border bg-muted/30 p-8 text-center text-muted-foreground py-12">
             No movies found. Check the API configuration or try again later.
           </div>
         )}

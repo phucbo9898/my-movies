@@ -25,6 +25,7 @@ export function SearchForm() {
 
     setIsLoading(true);
     router.push(`/search?q=${encodeURIComponent(keyword)}`);
+    setIsLoading(false);
   };
 
   const handleClear = () => {

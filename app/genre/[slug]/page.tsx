@@ -1,6 +1,8 @@
 import MainLayout from "@/app/shared/components/layout/main-layout";
 import { getMoviesByGenre } from "@/app/services/movie-ophim-api";
-import { MovieGrid } from "@/app/features/movie/components/movie-grid";
+import GenreMoviesWrapper from "@/app/features/movie/components/genre-movies-wrapper";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Footer } from "@/app/shared/components/layout/footer";
 
 interface GenreDetailPageProps {
@@ -11,31 +13,33 @@ export default async function GenreDetailPage({
   params,
 }: GenreDetailPageProps) {
   const { slug } = await params;
-  const [movies] = await Promise.all([
-    getMoviesByGenre(slug, 1),
-  ]);
+  const moviesPromise = getMoviesByGenre(slug, 1);
 
-  const genreName = "Danh Mục"; // You'll need to implement a function to get the genre name by slug
+  const genreName = "Danh Mục"; // Implement fetching genre name by slug if needed
 
   return (
     <MainLayout>
-      <main className="space-y-8">
+      <main className="space-y-8 py-6">
         {/* Header */}
-        <div className="pt-6">
-          <h1 className="text-4xl font-bold text-white mb-2">{genreName}</h1>
-          <p className="text-zinc-400">
-            {movies.length} bộ phim trong danh mục này
-          </p>
+        <div className="pt-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            {genreName}
+          </h1>
+          <p className="text-muted-foreground">Đang tải danh sách phim...</p>
         </div>
 
         {/* Movie Grid */}
-        {movies.length > 0 ? (
-          <MovieGrid movies={movies} />
-        ) : (
-          <div className="rounded-3xl border border-dashed border-white/20 bg-white/5 p-14 text-center text-zinc-300">
-            Không tìm thấy phim nào trong danh mục này
-          </div>
-        )}
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-4 sm:px-6 lg:px-8">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <Skeleton key={i} className="h-72 rounded-lg" />
+              ))}
+            </div>
+          }
+        >
+          <GenreMoviesWrapper moviesPromise={moviesPromise} />
+        </Suspense>
       </main>
 
       {/* Footer */}

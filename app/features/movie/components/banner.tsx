@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Movie } from "@/app/types/movie";
 
 interface BannerProps {
@@ -61,11 +62,15 @@ export default function Banner({ movies }: BannerProps) {
   };
 
   if (!movies || movies.length === 0) {
-    return <div className="h-44 rounded-2xl bg-white/5" />;
+    return (
+      <section className="px-4 sm:px-6 lg:px-8">
+        <Skeleton className="w-full h-44 sm:h-56 rounded-2xl" />
+      </section>
+    );
   }
 
   return (
-    <section className="relative left-1/2 right-1/2 -translate-x-1/2">
+    <section className="relative w-full">
       <div
         ref={containerRef}
         className="relative w-full overflow-hidden touch-pan-y"
@@ -80,10 +85,16 @@ export default function Banner({ movies }: BannerProps) {
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
           {movies.map((m) => (
-            <Link
-              href={`/movie/${m.slug}`}
+            <div
               key={m._id}
-              className="relative min-w-full h-72 sm:h-96 lg:h-[420px]"
+              role="link"
+              tabIndex={0}
+              onClick={() => (window.location.href = `/movie/${m.slug}`)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter")
+                  window.location.href = `/movie/${m.slug}`;
+              }}
+              className="relative min-w-full h-72 sm:h-96 lg:h-[420px] cursor-pointer"
             >
               <Image
                 src={m.poster_url || m.thumb_url}
@@ -94,36 +105,61 @@ export default function Banner({ movies }: BannerProps) {
                 priority={false}
               />
 
-              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent" />
 
-              <div className="absolute left-6 bottom-5 right-6 max-w-3xl text-white">
-                <h3 className="text-xl font-bold sm:text-2xl md:text-3xl">
+              <div className="absolute left-4 bottom-4 right-4 max-w-3xl text-white md:left-8 md:bottom-8 md:right-8">
+                <h3 className="text-2xl font-extrabold sm:text-3xl md:text-4xl leading-tight">
                   {m.name}
                 </h3>
-                <div className="flex flex-wrap gap-1 mt-1 text-sm text-zinc-300">
+
+                <div className="flex flex-wrap gap-2 mt-3 text-sm">
                   {m.quality && (
-                    <p className="mt-2 text-sm text-zinc-300 sm:block border border-white/20 inline-block px-2 py-1 rounded">
+                    <span className="inline-block text-sm bg-popover/10 border border-border px-2 py-1 rounded text-white">
                       {m.quality}
-                    </p>
+                    </span>
                   )}
                   {m.episode_current && (
-                    <p className="mt-2 text-sm text-zinc-300 sm:block border border-white/20 inline-block px-2 py-1 rounded">
+                    <span className="inline-block text-sm text-white bg-popover/10 border border-border px-2 py-1 rounded">
                       {m.episode_current}
-                    </p>
+                    </span>
                   )}
                   {m.lang && (
-                    <p className="mt-2 text-sm text-zinc-300 sm:block border border-white/20 inline-block px-2 py-1 rounded">
+                    <span className="inline-block text-sm text-white bg-popover/10 border border-border px-2 py-1 rounded">
                       {m.lang}
-                    </p>
+                    </span>
                   )}
                   {m.time && (
-                    <p className="mt-2 text-sm text-zinc-300 sm:block border border-white/20 inline-block px-2 py-1 rounded">
+                    <span className="inline-block text-sm text-white bg-popover/10 border border-border px-2 py-1 rounded">
                       {m.time}
-                    </p>
+                    </span>
                   )}
                 </div>
+
+                <div className="mt-4 flex gap-3">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.location.href = `/watch/${m.slug}`;
+                    }}
+                  >
+                    Watch
+                  </Button>
+
+                  <Button
+                    variant="warning"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.location.href = `/movie/${m.slug}`;
+                    }}
+                  >
+                    Details
+                  </Button>
+                </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 

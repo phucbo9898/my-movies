@@ -11,15 +11,16 @@ interface MovieCardProps {
 export function MovieCard({ movie }: MovieCardProps) {
   return (
     <Link href={`/movie/${movie.slug}`}>
-      <div className="group relative overflow-hidden rounded-lg bg-linear-to-b from-gray-900/80 to-gray-900/60 shadow-xl transition-transform duration-300 hover:scale-105">
+      <div className="group relative overflow-hidden rounded-xl bg-card transition-transform duration-300 hover:scale-[1.03] hover:shadow-md">
         {/* Thumbnail Container */}
-        <div className="relative h-72 w-full overflow-hidden bg-gray-800 dark:bg-gray-800">
+        <div className="relative h-56 w-full overflow-hidden rounded-lg bg-muted sm:h-64 md:h-72 lg:h-80">
           <Image
             src={movie.thumb_url || movie.poster_url}
             alt={movie.name}
             fill
             className="object-cover transform transition-transform duration-700 ease-out group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority
           />
           {/* Cinematic Gradient (always subtle, stronger on hover) */}
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent pointer-events-none transition-opacity duration-300" />
@@ -52,12 +53,12 @@ export function MovieCard({ movie }: MovieCardProps) {
 
           {/* Bottom info: title + meta overlayed on poster */}
           <div className="absolute left-0 right-0 bottom-0 p-3">
-            <div className="transform translate-y-4 opacity-80 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-              <h3 className="line-clamp-2 text-sm font-semibold text-white drop-shadow-md">
+            <div className="transform translate-y-4 opacity-90 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+              <h3 className="line-clamp-2 text-sm font-semibold text-card-foreground">
                 {movie.name}
               </h3>
 
-              <div className="mt-1 mb-2 flex items-center justify-between text-xs text-gray-300">
+              <div className="mt-1 mb-2 flex items-center justify-between text-xs text-muted-foreground">
                 <span>{movie.episode_current}</span>
                 {movie.year && <span>{movie.year}</span>}
               </div>

@@ -1,18 +1,23 @@
-'use client';
+"use client";
 
-import { Movie } from '@/app/types/movie';
-import { MovieCard } from './movie-card';
+import { Movie } from "@/app/types/movie";
+import { MovieCard } from "./movie-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MovieGridProps {
   movies: Movie[];
   className?: string;
 }
 
-export function MovieGrid({ movies, className = '' }: MovieGridProps) {
+export function MovieGrid({ movies, className = "" }: MovieGridProps) {
   if (!movies || movies.length === 0) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-gray-400">No movies found</p>
+      <div
+        className={`grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ${className}`}
+      >
+        {Array.from({ length: 10 }).map((_, i) => (
+          <Skeleton key={i} className="h-72 rounded-lg" />
+        ))}
       </div>
     );
   }
