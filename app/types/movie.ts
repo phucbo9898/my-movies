@@ -32,6 +32,7 @@ export interface Movie {
   view: number;
   alternative_names: string[];
   year: number;
+  last_episodes: EpisodeMovieSearch[];
 }
 
 export interface Episode {
@@ -47,4 +48,9 @@ export interface ServerData {
   link_embed: string;
   link_m3u8: string;
   sources: PlayerSource[];
+}
+
+export interface EpisodeMovieSearch {
+  server_name: string;
+  name: string;
 }

@@ -150,6 +150,12 @@ const normalizeMovie = (raw: OPhimMovieRaw, imageBaseUrl?: string): Movie => ({
       )
     : [],
   year: normalizeNumber(raw.year),
+  last_episodes: Array.isArray(raw.last_episodes)
+    ? raw.last_episodes.filter(isRecord).map((episode) => ({
+        server_name: normalizeString(episode.server_name),
+        name: normalizeString(episode.name),
+      }))
+    : [],
 });
 
 const normalizeMovieGenre = (raw: TaxonomyRaw): MovieGenre => ({
@@ -210,6 +216,9 @@ const normalizeMovieDetail = (
   episodes: Array.isArray(raw.episodes)
     ? raw.episodes.filter(isRecord).map(normalizeEpisode)
     : [],
+  trailer_url: normalizeString(
+    raw.trailer_url ?? raw.trailerUrl ?? raw.trailer,
+  ),
 });
 
 const extractMoviePayload = (payload: unknown): OPhimMovieRaw | null => {
@@ -424,6 +433,7 @@ export const searchMovies = async (
   const movies = extractItems(payload).map((item) =>
     normalizeMovie(item, imageBaseUrl),
   );
+  console.log('movie', movies);
   const pagination = getSearchPagination(payload);
 
   return {

@@ -19,7 +19,9 @@ export default async function MovieDetailWrapper({
 
       <div className="space-y-8">
         <MovieMeta movie={movie} />
-        <EpisodeList episodes={movie.episodes} movieSlug={movie.slug} />
+        {movie.status == "completed" && (
+          <EpisodeList episodes={movie.episodes} movieSlug={movie.slug} movieStatus={movie.status} />
+        )}
       </div>
     </>
   );

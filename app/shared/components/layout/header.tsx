@@ -39,10 +39,7 @@ export function Header() {
             <Link href="/genres" className="transition hover:text-foreground">
               Category
             </Link>
-            <Link
-              href="/search"
-              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-primary px-4 py-2 text-primary-foreground transition hover:bg-primary/90"
-            >
+            <Link href="/search" className="transition hover:text-foreground">
               Movie
             </Link>
           </nav>

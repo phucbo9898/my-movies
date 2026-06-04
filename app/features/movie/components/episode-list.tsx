@@ -11,12 +11,14 @@ interface EpisodeListProps {
   episodes: Episode[];
   movieSlug: string;
   selectedSlug?: string;
+  movieStatus?: string;
 }
 
 export function EpisodeList({
   episodes,
   movieSlug,
   selectedSlug,
+  movieStatus,
 }: EpisodeListProps) {
   const [activeTab, setActiveTab] = useState<"ophim" | "nguonc">("ophim");
   const [nguoncEpisodes, setNguoncEpisodes] = useState<Episode[]>([]);

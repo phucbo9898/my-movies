@@ -24,4 +24,5 @@ export interface MovieDetail {
   alternative_names: string[];
   year: number;
   episodes: Episode[];
+  trailer_url: string;
 }
